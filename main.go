@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/SamuelMR98/osint-lite-go/internal"
+	"github.com/SamuelMR98/osint-lite-go/utils"
 	"github.com/fatih/color"
 )
 
@@ -79,15 +80,15 @@ func main() {
 	wg.Wait()
 	close(results)
 
-	color.Green("\nOSINT Lite Results for: %s\n\n", username)
+	color.Cyan("\nOSINT Lite Results for: %s\n\n", username)
 
 	for result := range results {
 		if result.Error != "" {
 			color.Red("Error checking %s: %s\n", result.Site, result.Error)
 		} else if result.Found {
-			color.Green("[%s] %s (Status: %d)\n", result.Site, result.URL, result.StatusCode)
+			color.Green("[%s] %s (Status: %d - %s)\n", result.Site, result.URL, result.StatusCode, utils.GetStatusText(result.StatusCode))
 		} else {
-			color.Yellow("[%s] %s (Status: %d)\n", result.Site, result.URL, result.StatusCode)
+			color.Yellow("[%s] %s (Status: %d - %s)\n", result.Site, result.URL, result.StatusCode, utils.GetStatusText(result.StatusCode))
 		}
 	}
 }
