@@ -1,30 +1,17 @@
 package main
 
 import (
-	"net/http"
-	"sync"
-	"time"
-
 	"github.com/SamuelMR98/osint-lite-go/cmd"
 	"github.com/SamuelMR98/osint-lite-go/internal"
-	"github.com/SamuelMR98/osint-lite-go/utils"
-	"github.com/fatih/color"
 	flag "github.com/spf13/pflag"
 )
-
-
-var sites = []internal.Site{
-	{Name: "GitHub", URL: "https://github.com/%s"},
-	{Name: "Reddit", URL: "https://www.reddit.com/user/%s"},
-	{Name: "Hacker News", URL: "https://news.ycombinator.com/user?id=%s"},
-	{Name: "DEV.to", URL: "https://dev.to/%s"},
-	{Name: "Medium", URL: "https://medium.com/@%s"},
-	{Name: "GitLab", URL: "https://gitlab.com/%s"},
-}
 
 func main() {
 	// Define flags with shorthand versions
 	helpFlag := flag.BoolP("help", "h", false, "Show help message")
+	socialFlag := flag.BoolP("social", "s", false, "Check social media platforms")
+	techFlag := flag.BoolP("tech", "t", false, "Check tech platforms")
+	jsonFlag := flag.BoolP("json", "j", false, "Output results in JSON format")
 	flag.Parse()
 
 	// Show help if the flag is set or if no username is provided
@@ -34,31 +21,25 @@ func main() {
 	}
 
 	username := flag.Arg(0)
-	color.Cyan("\nChecking availability for username: %s\n\n", username)
 
-	client := &http.Client{Timeout: 10 * time.Second}
-	var wg sync.WaitGroup
-	results := make(chan internal.Result, len(sites))
-
-	for _, site := range sites {
-		wg.Add(1)
-		go func(site internal.Site) {
-			defer wg.Done()
-			result := cmd.CheckSite(client, site, username)
-			results <- result
-		}(site)
+	// Determine which sites to check based on flags (run all if no specific category is selected)
+	var selectedSites []internal.Site
+	if *socialFlag {
+		selectedSites = append(selectedSites, internal.GetSocialSites()...)
+	}
+	if *techFlag {
+		selectedSites = append(selectedSites, internal.GetTechSites()...)
+	}
+	if !*socialFlag && !*techFlag {
+		selectedSites = append(selectedSites, internal.GetSocialSites()...)
+		selectedSites = append(selectedSites, internal.GetTechSites()...)
 	}
 
-	wg.Wait()
-	close(results)
+	results := cmd.CheckSites(username, selectedSites)
 
-	for result := range results {
-		if result.Error != "" {
-			color.Red("Error checking %s: %s\n", result.Site, result.Error)
-		} else if result.Found {
-			color.Green("%s: Found at %s (Status Code: %d - %s)\n", result.Site, result.URL, result.StatusCode, utils.GetStatusText(result.StatusCode))
-		} else {
-			color.Yellow("%s: Not found (Status Code: %d - %s)\n", result.Site, result.StatusCode, utils.GetStatusText(result.StatusCode))
-		}
+	if *jsonFlag {
+		cmd.PrintJSON(results)
+	} else {
+		cmd.PrintResults(results)
 	}
 }

@@ -8,11 +8,20 @@ import (
 )
 
 func Help() {
-	color.Cyan("Usage: osint-lite <username>")
-	color.Cyan("\nOptions:")
-	color.Cyan("  -h, --help    Show this help message")
-	color.Cyan("\nExamples:")
-	color.Cyan("  osint-lite john_doe")
-	color.Cyan("  osint-lite jane.smith")
+	color.Cyan("osint-lite-go - A simple OSINT tool for checking username availability across various platforms.\n")
+	color.Green("Usage:")
+	color.White("  osint-lite-go [options] <username>\n")
+	color.Green("Options:")
+	color.White("  -h, --help       Show help message")
+	color.White("  -s, --social     Check social media platforms")
+	color.White("  -t, --tech       Check tech platforms")
+	color.White("  -j, --json       Output results in JSON format\n")
+	color.Green("Examples:")
+	color.White("  osint-lite-go johndoe")
+	color.White("  osint-lite-go -s johndoe")
+	color.White("  osint-lite-go -t johndoe")
+	color.White("  osint-lite-go -s -t johndoe")
+	color.White("  osint-lite-go -j johndoe\n")
+	color.Cyan("For more information, visit the GitHub repository: https://github.com/SamuelMR98/osint-lite-go")
 }
 

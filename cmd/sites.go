@@ -40,3 +40,13 @@ func CheckSite(client *http.Client, site internal.Site, username string) interna
 	}
 }
 
+func CheckSites(username string, sites []internal.Site) []internal.Result {
+	client := &http.Client{}
+	results := make([]internal.Result, len(sites))
+
+	for i, site := range sites {
+		results[i] = CheckSite(client, site, username)
+	}
+
+	return results
+}
