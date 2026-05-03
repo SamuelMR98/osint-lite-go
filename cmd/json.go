@@ -17,10 +17,17 @@ func PrintJSON(results []internal.Result) {
 	fmt.Println(string(jsonData))
 }
 
-func SaveJSON(filename string, results []internal.Result) error {
+func SaveJSON(filename string, results []internal.Result) {
 	jsonData, err := json.MarshalIndent(results, "", "  ")
 	if err != nil {
-		return fmt.Errorf("error encoding results to JSON: %v", err)
+		fmt.Printf("Error encoding results to JSON: %v\n", err)
+		return
 	}
-	return os.WriteFile(filename, jsonData, 0644)
+
+	err = os.WriteFile(filename, jsonData, 0644)
+	if err != nil {
+		fmt.Printf("Error saving JSON to file: %v\n", err)
+		return
+	}
+	fmt.Printf("Results saved to %s\n", filename)
 }

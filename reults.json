@@ -1,0 +1,79 @@
+[
+  {
+    "Site": "Instagram",
+    "URL": "https://www.instagram.com/torvalds",
+    "Found": true,
+    "StatusCode": 200,
+    "Error": ""
+  },
+  {
+    "Site": "Twitter",
+    "URL": "https://twitter.com/torvalds",
+    "Found": true,
+    "StatusCode": 200,
+    "Error": ""
+  },
+  {
+    "Site": "Facebook",
+    "URL": "https://www.facebook.com/torvalds",
+    "Found": true,
+    "StatusCode": 200,
+    "Error": ""
+  },
+  {
+    "Site": "LinkedIn",
+    "URL": "https://www.linkedin.com/in/torvalds",
+    "Found": false,
+    "StatusCode": 999,
+    "Error": ""
+  },
+  {
+    "Site": "TikTok",
+    "URL": "https://www.tiktok.com/@torvalds",
+    "Found": true,
+    "StatusCode": 200,
+    "Error": ""
+  },
+  {
+    "Site": "Reddit",
+    "URL": "https://www.reddit.com/user/torvalds",
+    "Found": true,
+    "StatusCode": 200,
+    "Error": ""
+  },
+  {
+    "Site": "GitHub",
+    "URL": "https://github.com/torvalds",
+    "Found": true,
+    "StatusCode": 200,
+    "Error": ""
+  },
+  {
+    "Site": "Hacker News",
+    "URL": "https://news.ycombinator.com/user?id=torvalds",
+    "Found": true,
+    "StatusCode": 200,
+    "Error": ""
+  },
+  {
+    "Site": "DEV.to",
+    "URL": "https://dev.to/torvalds",
+    "Found": false,
+    "StatusCode": 404,
+    "Error": ""
+  },
+  {
+    "Site": "Medium",
+    "URL": "https://medium.com/@torvalds",
+    "Found": true,
+    "StatusCode": 403,
+    "Error": ""
+  },
+  {
+    "Site": "GitLab",
+    "URL": "https://gitlab.com/torvalds",
+    "Found": true,
+    "StatusCode": 200,
+    "Error": ""
+  }
+]

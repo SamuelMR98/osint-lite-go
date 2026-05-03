@@ -13,6 +13,20 @@ type Result struct {
 	Error string
 }
 
+type Config struct {
+	Username string
+
+	Social bool
+	Tech   bool
+
+	PrintJSON bool
+	SaveJSON  string
+
+	NoSpinner bool
+	ShowHelp  bool
+	Version   bool
+}
+
 var SocialSites = []Site{
 	{Name: "Instagram", URL: "https://www.instagram.com/%s"},
 	{Name: "Twitter", URL: "https://twitter.com/%s"},

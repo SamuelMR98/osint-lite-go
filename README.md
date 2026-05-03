@@ -14,6 +14,7 @@ go run main.go [flags] <username>
 - `-s`, `--social`: Check social media platforms only
 - `-t`, `--tech`: Check tech platforms only
 - `-j`, `--json`: Output results in JSON format
+- `-jsave`, `--json-save`: Save results to a JSON file (e.g., results.json)
 
 ### Examples
 
