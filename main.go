@@ -1,16 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
-	"os"
-	"strings"
 	"sync"
 	"time"
 
+	"github.com/SamuelMR98/osint-lite-go/cmd"
 	"github.com/SamuelMR98/osint-lite-go/internal"
 	"github.com/SamuelMR98/osint-lite-go/utils"
 	"github.com/fatih/color"
+	flag "github.com/spf13/pflag"
 )
 
 
@@ -23,72 +22,43 @@ var sites = []internal.Site{
 	{Name: "GitLab", URL: "https://gitlab.com/%s"},
 }
 
-func checkSite(client *http.Client, site internal.Site, username string) internal.Result {
-	url := fmt.Sprintf(site.URL, username)
-
-	req, err := http.NewRequest(http.MethodGet, url, nil)
-	if err != nil {
-		return internal.Result{Site: site.Name, URL: url, Error: err.Error()}
-	}
-
-	req.Header.Set("User-Agent", "osint-lite-go/0.1")
-
-	resp, err := client.Do(req)
-	if err != nil {
-		return internal.Result{Site: site.Name, URL: url, Error: err.Error()}
-	}
-	defer resp.Body.Close()
-
-	found := resp.StatusCode == http.StatusOK ||
-		resp.StatusCode == http.StatusMovedPermanently ||
-		resp.StatusCode == http.StatusFound ||
-		resp.StatusCode == http.StatusForbidden
-
-	return internal.Result{
-		Site:       site.Name,
-		URL:        url,
-		Found:      found,
-		StatusCode: resp.StatusCode,
-	}
-}
-
 func main() {
-	if len(os.Args) < 2 {
-		color.Red("Usage: osint-lite <username>")
-		os.Exit(1)
+	// Define flags with shorthand versions
+	helpFlag := flag.BoolP("help", "h", false, "Show help message")
+	flag.Parse()
+
+	// Show help if the flag is set or if no username is provided
+	if *helpFlag || flag.NArg() == 0 {
+		cmd.Help()
+		return
 	}
 
-	username := strings.TrimSpace(os.Args[1])
-	// TODO: Implement usernames[] := usernameVariations(username) to generate common username variations (e.g., with dots, underscores, etc.)
+	username := flag.Arg(0)
+	color.Cyan("\nChecking availability for username: %s\n\n", username)
 
-	client := &http.Client{
-		Timeout: 10 * time.Second,
-	}
-
-	results := make(chan internal.Result, len(sites))
+	client := &http.Client{Timeout: 10 * time.Second}
 	var wg sync.WaitGroup
+	results := make(chan internal.Result, len(sites))
 
 	for _, site := range sites {
 		wg.Add(1)
-
 		go func(site internal.Site) {
 			defer wg.Done()
-			results <- checkSite(client, site, username)
+			result := cmd.CheckSite(client, site, username)
+			results <- result
 		}(site)
 	}
 
 	wg.Wait()
 	close(results)
 
-	color.Cyan("\nOSINT Lite Results for: %s\n\n", username)
-
 	for result := range results {
 		if result.Error != "" {
 			color.Red("Error checking %s: %s\n", result.Site, result.Error)
 		} else if result.Found {
-			color.Green("[%s] %s (Status: %d - %s)\n", result.Site, result.URL, result.StatusCode, utils.GetStatusText(result.StatusCode))
+			color.Green("%s: Found at %s (Status Code: %d - %s)\n", result.Site, result.URL, result.StatusCode, utils.GetStatusText(result.StatusCode))
 		} else {
-			color.Yellow("[%s] %s (Status: %d - %s)\n", result.Site, result.URL, result.StatusCode, utils.GetStatusText(result.StatusCode))
+			color.Yellow("%s: Not found (Status Code: %d - %s)\n", result.Site, result.StatusCode, utils.GetStatusText(result.StatusCode))
 		}
 	}
 }
