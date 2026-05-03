@@ -1,33 +1,41 @@
-package cmd
+package app
 
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/SamuelMR98/osint-lite-go/internal"
+	"github.com/fatih/color"
 )
 
-func PrintJSON(results []internal.Result) {
+func PrintJSON(w io.Writer, results []internal.Result) error {
+	blue := color.New(color.FgBlue)
 	jsonData, err := json.MarshalIndent(results, "", "  ")
 	if err != nil {
-		fmt.Printf("Error encoding results to JSON: %v\n", err)
-		return
+		return fmt.Errorf("error encoding results to JSON: %v", err)
 	}
-	fmt.Println(string(jsonData))
-}
 
-func SaveJSON(filename string, results []internal.Result) {
+	blue.Fprintln(w, string(jsonData))
+	return nil
+}
+func SaveJSON(results []internal.Result, filename string) error {
+	blue := color.New(color.FgBlue)
+	blue.Printf("Saving results to %s...\n", filename)
+	red := color.New(color.FgRed)
 	jsonData, err := json.MarshalIndent(results, "", "  ")
 	if err != nil {
-		fmt.Printf("Error encoding results to JSON: %v\n", err)
-		return
+		red.Printf("Error encoding results to JSON: %v\n", err)
+		return fmt.Errorf("error encoding results to JSON: %v", err)
 	}
 
 	err = os.WriteFile(filename, jsonData, 0644)
 	if err != nil {
-		fmt.Printf("Error saving JSON to file: %v\n", err)
-		return
+		red.Printf("Error writing JSON to file: %v\n", err)
+		return fmt.Errorf("error writing JSON to file: %v", err)
 	}
-	fmt.Printf("Results saved to %s\n", filename)
+
+	blue.Printf("Results saved to %s\n", filename)
+	return nil
 }

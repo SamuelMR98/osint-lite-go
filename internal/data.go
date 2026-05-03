@@ -12,19 +12,13 @@ type Result struct {
 	StatusCode int
 	Error string
 }
-
-type Config struct {
-	Username string
-
+type CheckOptions struct {
 	Social bool
-	Tech   bool
-
+	Tech bool
+	
 	PrintJSON bool
 	SaveJSON  string
-
 	NoSpinner bool
-	ShowHelp  bool
-	Version   bool
 }
 
 var SocialSites = []Site{

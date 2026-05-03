@@ -51,18 +51,18 @@ func CheckSites(username string, sites []internal.Site) []internal.Result {
 	return results
 }
 
-func BuildSelectedSites(cfg *internal.Config) []internal.Site {
+func BuildSelectedSites(opts internal.CheckOptions) []internal.Site {
 	var selectedSites []internal.Site
 
-	if cfg.Social {
+	if opts.Social {
 		selectedSites = append(selectedSites, internal.GetSocialSites()...)
 	}
-	if cfg.Tech {
+	if opts.Tech {
 		selectedSites = append(selectedSites, internal.GetTechSites()...)
 	}
 
 	// Default behaviour: run all categories if none specified
-	if !cfg.Social && !cfg.Tech {
+	if !opts.Social && !opts.Tech {
 		selectedSites = append(selectedSites, internal.GetSocialSites()...)
 		selectedSites = append(selectedSites, internal.GetTechSites()...)
 	}

@@ -1,21 +1,24 @@
-package cmd
+package app
 
 import (
-	"net/http"
+	"io"
 
 	"github.com/SamuelMR98/osint-lite-go/internal"
+	"github.com/SamuelMR98/osint-lite-go/utils"
 	"github.com/fatih/color"
 )
 
-func PrintResults(results []internal.Result) {
+func PrintResults(w io.Writer, results []internal.Result) {
+	green := color.New(color.FgGreen)
+	red := color.New(color.FgRed)
+	yellow := color.New(color.FgYellow)
 	for _, result := range results {
-		if result.Error != "" {
-			color.Red("%s: Error checking %s - %s", result.Site, result.URL, result.Error)
-		}
 		if result.Found {
-			color.Green("%s: Found at %s (Status Code: %d - %s)", result.Site, result.URL, result.StatusCode, http.StatusText(result.StatusCode))
+			green.Fprintf(w, "✓ %s: %s (Status: %d - %s)\n", result.Site, result.URL, result.StatusCode, utils.GetStatusText(result.StatusCode))
+		} else if result.Error != "" {
+			red.Fprintf(w, "✗ %s: %s (Error: %s)\n", result.Site, result.URL, result.Error)
 		} else {
-			color.Yellow("%s: Not found at %s (Status Code: %d - %s)", result.Site, result.URL, result.StatusCode, http.StatusText(result.StatusCode))
+			yellow.Fprintf(w, "⚠ %s: %s (Status: %d - %s)\n", result.Site, result.URL, result.StatusCode, utils.GetStatusText(result.StatusCode))
 		}
 	}
 }
