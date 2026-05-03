@@ -8,44 +8,33 @@ import (
 	"sync"
 	"time"
 
+	"github.com/SamuelMR98/osint-lite-go/internal"
 	"github.com/fatih/color"
 )
 
-type Site struct {
-	Name string
-	URL  string
+
+var sites = []internal.Site{
+	{Name: "GitHub", URL: "https://github.com/%s"},
+	{Name: "Reddit", URL: "https://www.reddit.com/user/%s"},
+	{Name: "Hacker News", URL: "https://news.ycombinator.com/user?id=%s"},
+	{Name: "DEV.to", URL: "https://dev.to/%s"},
+	{Name: "Medium", URL: "https://medium.com/@%s"},
+	{Name: "GitLab", URL: "https://gitlab.com/%s"},
 }
 
-type Result struct {
-	Site   string
-	URL   string
-	Found bool
-	StatusCode int
-	Error string
-}
-
-var sites = []Site{
-	{"GitHub", "https://github.com/%s"},
-	{"Reddit", "https://www.reddit.com/user/%s"},
-	{"Hacker News", "https://news.ycombinator.com/user?id=%s"},
-	{"DEV.to", "https://dev.to/%s"},
-	{"Medium", "https://medium.com/@%s"},
-	{"GitLab", "https://gitlab.com/%s"},
-}
-
-func checkSite(client *http.Client, site Site, username string) Result {
+func checkSite(client *http.Client, site internal.Site, username string) internal.Result {
 	url := fmt.Sprintf(site.URL, username)
 
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
-		return Result{Site: site.Name, URL: url, Error: err.Error()}
+		return internal.Result{Site: site.Name, URL: url, Error: err.Error()}
 	}
 
 	req.Header.Set("User-Agent", "osint-lite-go/0.1")
 
 	resp, err := client.Do(req)
 	if err != nil {
-		return Result{Site: site.Name, URL: url, Error: err.Error()}
+		return internal.Result{Site: site.Name, URL: url, Error: err.Error()}
 	}
 	defer resp.Body.Close()
 
@@ -54,7 +43,7 @@ func checkSite(client *http.Client, site Site, username string) Result {
 		resp.StatusCode == http.StatusFound ||
 		resp.StatusCode == http.StatusForbidden
 
-	return Result{
+	return internal.Result{
 		Site:       site.Name,
 		URL:        url,
 		Found:      found,
@@ -75,13 +64,13 @@ func main() {
 		Timeout: 10 * time.Second,
 	}
 
-	results := make(chan Result, len(sites))
+	results := make(chan internal.Result, len(sites))
 	var wg sync.WaitGroup
 
 	for _, site := range sites {
 		wg.Add(1)
 
-		go func(site Site) {
+		go func(site internal.Site) {
 			defer wg.Done()
 			results <- checkSite(client, site, username)
 		}(site)
