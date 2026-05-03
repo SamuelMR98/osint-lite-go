@@ -1,4 +1,4 @@
-package cmd
+package app
 
 // This file contains the main logic for checking username availability across various platforms.
 // It defines the list of platforms to check, performs HTTP requests to determine if the username exists,

@@ -1,4 +1,4 @@
-package cmd
+package app
 
 // Help command implementation for osint-lite-go.
 // This command provides users with information on how to use the tool, including available options and examples.
