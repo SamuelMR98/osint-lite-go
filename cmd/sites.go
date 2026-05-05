@@ -6,7 +6,7 @@ import (
 )
 
 var sitesCmd = &cobra.Command{
-	Use: "sites",
+	Use:   "sites",
 	Short: "List all supported OSINT platforms",
 	Long: `List all supported OSINT platforms that osint-lite can check.
 	This command is useful to see the full list of platforms and their categories.`,

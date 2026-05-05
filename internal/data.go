@@ -6,16 +6,16 @@ type Site struct {
 }
 
 type Result struct {
-	Site   string
-	URL   string
-	Found bool
+	Site       string
+	URL        string
+	Found      bool
 	StatusCode int
-	Error string
+	Error      string
 }
 type CheckOptions struct {
 	Social bool
-	Tech bool
-	
+	Tech   bool
+
 	PrintJSON bool
 	SaveJSON  string
 	NoSpinner bool

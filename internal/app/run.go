@@ -7,7 +7,7 @@ import (
 	"github.com/fatih/color"
 )
 
-func RunWithSpinner(stderr interface { Write([]byte)(int, error)}, message string, work func() error) error {
+func RunWithSpinner(stderr interface{ Write([]byte) (int, error) }, message string, work func() error) error {
 	purple := color.New(color.FgMagenta)
 	frames := []string{"⣾", "⣷", "⣯", "⣟", "⣻", "⣽", "⣾", "⣷"}
 	done := make(chan error, 1)
@@ -18,7 +18,7 @@ func RunWithSpinner(stderr interface { Write([]byte)(int, error)}, message strin
 
 	ticker := time.NewTicker(100 * time.Millisecond)
 	defer ticker.Stop()
-	
+
 	i := 0
 	for {
 		select {

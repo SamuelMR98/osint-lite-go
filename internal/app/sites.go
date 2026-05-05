@@ -13,7 +13,7 @@ import (
 
 func CheckSite(client *http.Client, site internal.Site, username string) internal.Result {
 	url := fmt.Sprintf(site.URL, username)
-	
+
 	req, err := http.NewRequest(http.MethodGet, url, nil)
 	if err != nil {
 		return internal.Result{Site: site.Name, URL: url, Error: err.Error()}
@@ -26,12 +26,12 @@ func CheckSite(client *http.Client, site internal.Site, username string) interna
 		return internal.Result{Site: site.Name, URL: url, Error: err.Error()}
 	}
 	defer resp.Body.Close()
-	
+
 	found := resp.StatusCode == http.StatusOK ||
 		resp.StatusCode == http.StatusMovedPermanently ||
 		resp.StatusCode == http.StatusFound ||
 		resp.StatusCode == http.StatusForbidden
-		
+
 	return internal.Result{
 		Site:       site.Name,
 		URL:        url,
@@ -72,13 +72,13 @@ func BuildSelectedSites(opts internal.CheckOptions) []internal.Site {
 
 func GetSupportedSites() map[string][]string {
 	sites := make(map[string][]string)
-	
+
 	for _, site := range internal.GetSocialSites() {
 		sites["Social Media"] = append(sites["Social Media"], site.Name)
 	}
 	for _, site := range internal.GetTechSites() {
 		sites["Tech Platforms"] = append(sites["Tech Platforms"], site.Name)
 	}
-	
+
 	return sites
 }

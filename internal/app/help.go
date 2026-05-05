@@ -24,4 +24,3 @@ func Help() {
 	color.White("  osint-lite-go -j johndoe\n")
 	color.Cyan("For more information, visit the GitHub repository: https://github.com/SamuelMR98/osint-lite-go")
 }
-

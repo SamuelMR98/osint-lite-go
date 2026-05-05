@@ -8,16 +8,15 @@ import (
 	"github.com/spf13/cobra"
 )
 
-
 var checkOpts internal.CheckOptions
 
 var checkCmd = &cobra.Command{
-	Use: "check [username]",
+	Use:   "check [username]",
 	Short: "Check username across OSINT platforms",
 	Long: `Check a username across various social media and tech platforms.
 	By default, this command checks all supported platform categories.
 	Use --social or --tech to limit the scope of the check.`,
-	
+
 	Example: ` osint-lite check jhonDoe
 	osint-lite check jhonDoe --social
 	osint-lite check jhonDoe --tech
@@ -49,7 +48,7 @@ var checkCmd = &cobra.Command{
 				return err
 			}
 		}
-		
+
 		if checkOpts.PrintJSON {
 			return app.PrintJSON(cmd.OutOrStdout(), results)
 		}
