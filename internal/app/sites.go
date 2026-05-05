@@ -69,3 +69,16 @@ func BuildSelectedSites(opts internal.CheckOptions) []internal.Site {
 
 	return selectedSites
 }
+
+func GetSupportedSites() map[string][]string {
+	sites := make(map[string][]string)
+	
+	for _, site := range internal.GetSocialSites() {
+		sites["Social Media"] = append(sites["Social Media"], site.Name)
+	}
+	for _, site := range internal.GetTechSites() {
+		sites["Tech Platforms"] = append(sites["Tech Platforms"], site.Name)
+	}
+	
+	return sites
+}
